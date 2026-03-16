@@ -1,12 +1,11 @@
 import axios from 'axios'
 import { message } from 'ant-design-vue'
 
-// 区分开发和生产环境
-const DEV_BASE_URL = 'http://localhost:9123'
+// 区分开发和生产环境：开发时用空 baseURL 走 Vite 代理，避免跨域导致 Cookie 无法设置
 const PROD_BASE_URL = 'http://49.232.171.218'
 // 创建 Axios 实例
 const myAxios = axios.create({
-  baseURL: DEV_BASE_URL,
+  baseURL: import.meta.env.DEV ? '' : PROD_BASE_URL,
   timeout: 10000,
   withCredentials: true,
 })

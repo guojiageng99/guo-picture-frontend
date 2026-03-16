@@ -19,11 +19,11 @@
       </a-col>
       <a-col flex="120px">
         <div class="user-login-status">
-          <!-- 已登录：显示头像 + 下拉菜单 -->
+          <!-- 已登录：显示代码图标 + 用户名 + 下拉菜单 -->
           <div v-if="loginUserStore.loginUser.id">
             <a-dropdown placement="bottomRight">
               <a-space :size="8" align="center" style="cursor: pointer">
-                <a-avatar :src="loginUserStore.loginUser.userAvatar || undefined" size="small" />
+                <CodeOutlined style="font-size: 16px" />
                 <span>{{ loginUserStore.loginUser.userName ?? '无名' }}</span>
               </a-space>
               <template #overlay>
@@ -55,7 +55,7 @@
 <script lang="ts" setup>
 import { computed, h, ref } from 'vue'
 import { RouterLink } from 'vue-router'
-import { HomeOutlined, LogoutOutlined } from '@ant-design/icons-vue'
+import { CodeOutlined, HomeOutlined, LogoutOutlined } from '@ant-design/icons-vue'
 import { useRouter, useRoute } from 'vue-router'
 import { useLoginUserStore } from '@/stores/useLoginUserStore'
 import { message } from 'ant-design-vue'
@@ -71,7 +71,7 @@ const goToLogin = () => {
   router.push('/user/login')
 }
 
-// 菜单列表
+// 菜单列表（顺序：主页、创建图片、用户管理、图片管理、空间管理）
 const originItems = [
   {
     key: '/',
@@ -80,14 +80,14 @@ const originItems = [
     title: '主页',
   },
   {
-    key: '/admin/userManage',
-    label: '用户管理',
-    title: '用户管理',
-  },
-  {
     key: '/add_picture',
     label: '创建图片',
     title: '创建图片',
+  },
+  {
+    key: '/admin/userManage',
+    label: '用户管理',
+    title: '用户管理',
   },
   {
     key: '/admin/pictureManage',
@@ -98,12 +98,6 @@ const originItems = [
     key: '/admin/spaceManage',
     label: '空间管理',
     title: '空间管理',
-  },
-
-  {
-    key: 'others',
-    label: h('a', { href: 'https://www.codefather.cn', target: '_blank' }, '编程导航'),
-    title: '编程导航',
   },
 ]
 
