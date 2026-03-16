@@ -263,6 +263,7 @@ declare namespace API {
     sortField?: string
     sortOrder?: string
     spaceId?: number
+    tags?: string[]
   }
 
   type PictureReviewRequest = {

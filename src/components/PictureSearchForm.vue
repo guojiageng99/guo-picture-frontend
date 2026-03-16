@@ -7,7 +7,13 @@
       <a-input v-model:value="formData.category" placeholder="请输入分类" allow-clear />
     </a-form-item>
     <a-form-item name="tags" label="标签">
-      <a-input v-model:value="formData.tags" placeholder="请输入标签" allow-clear />
+      <a-select
+        v-model:value="formData.tags"
+        mode="tags"
+        placeholder="请输入标签，回车添加"
+        style="min-width: 180px"
+        allow-clear
+      />
     </a-form-item>
     <a-form-item>
       <a-button type="primary" html-type="submit">搜索</a-button>

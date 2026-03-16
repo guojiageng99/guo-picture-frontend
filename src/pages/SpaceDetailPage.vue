@@ -164,14 +164,27 @@ const searchParams = ref<API.PictureQueryRequest>({
   sortOrder: 'descend',
 })
 
+// 构建请求参数，确保 JSON 格式正确（过滤空值，tags 转为 string[]）
+const buildRequestParams = (): API.PictureQueryRequest => {
+  const raw = { ...searchParams.value, spaceId: props.id }
+  const params: Record<string, unknown> = {}
+  for (const [key, value] of Object.entries(raw)) {
+    if (value === undefined || value === '' || value === null) continue
+    // tags 需为 string[]，字符串需转换
+    if (key === 'tags') {
+      const arr = Array.isArray(value) ? value : (typeof value === 'string' ? value.split(/[,，\s]+/).filter(Boolean) : [])
+      if (arr.length > 0) params[key] = arr
+    } else {
+      params[key] = value
+    }
+  }
+  return params as API.PictureQueryRequest
+}
+
 // 获取数据
 const fetchData = async () => {
   loading.value = true
-  // 转换搜索参数
-  const params = {
-    spaceId: props.id,
-    ...searchParams.value,
-  }
+  const params = buildRequestParams()
   const res = await listPictureVoByPageUsingPost(params)
   if (res.data.code === 0 && res.data.data) {
     dataList.value = res.data.data.records ?? []
@@ -196,14 +209,11 @@ const onPageChange = (page: number, pageSize: number) => {
 
 // 搜索
 const onSearch = (newSearchParams: API.PictureQueryRequest) => {
-  console.log('new', newSearchParams)
-
   searchParams.value = {
     ...searchParams.value,
     ...newSearchParams,
     current: 1,
   }
-  console.log('searchparams', searchParams.value)
   fetchData()
 }
 
