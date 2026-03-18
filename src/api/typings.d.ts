@@ -438,6 +438,7 @@ declare namespace API {
   type ImageSearchResult = {
     id?: number
     name?: string
+    url?: string
     thumbUrl?: string
     fromUrl?: string
   }

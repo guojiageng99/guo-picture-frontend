@@ -81,12 +81,10 @@ const doClickPicture = (picture: API.PictureVO) => {
   })
 }
 
-// 搜索
+// 搜索（以图搜图）
 const doSearch = (picture, e) => {
-  // 阻止冒泡
   e.stopPropagation()
-  // 打开新的页面
-  window.open(`/search_picture?pictureId=${picture.id}`)
+  router.push(`/search_picture?pictureId=${picture.id}`)
 }
 
 // 编辑

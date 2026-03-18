@@ -228,6 +228,7 @@ export async function searchPictureByPictureUsingPost(
       'Content-Type': 'application/json',
     },
     data: body,
+    timeout: 120000, // 2分钟超时，以图搜图需启动浏览器约15-30秒
     ...(options || {}),
   })
 }
