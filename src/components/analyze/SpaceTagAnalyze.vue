@@ -11,13 +11,13 @@ import VChart from 'vue-echarts'
 import 'echarts'
 import 'echarts-wordcloud'
 import { computed, ref, watchEffect } from 'vue'
-import { getSpaceTagAnalyzeUsingPost } from '@/api/spaceAnalyzeController.ts'
+import { getSpaceTagAnalyzeUsingPost } from '@/api/spaceAnalyzeController'
 import { message } from 'ant-design-vue'
 
 interface Props {
   queryAll?: boolean
   queryPublic?: boolean
-  spaceId?: number
+  spaceId?: number | string
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -26,7 +26,7 @@ const props = withDefaults(defineProps<Props>(), {
 })
 
 // 图表数据
-const dataList = ref<API.SpaceCategoryAnalyzeResponse>([])
+const dataList = ref<API.SpaceTagAnalyzeResponse[]>([])
 // 加载状态
 const loading = ref(true)
 
@@ -56,9 +56,9 @@ watchEffect(() => {
 
 // 图表选项
 const options =computed(() => {
-  const tagData = dataList.value.map((item) => ({
-    name: item.tag,
-    value: item.count,
+  const tagData = dataList.value.map((item: API.SpaceTagAnalyzeResponse) => ({
+    name: item.tag ?? '',
+    value: item.count ?? 0,
   }))
 
   return {

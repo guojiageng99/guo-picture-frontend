@@ -362,6 +362,36 @@ declare namespace API {
     userRole?: string
   }
 
+  type SpaceCategoryAnalyzeResponse = {
+    category?: string
+    count?: number
+    totalSize?: number
+  }
+
+  type SpaceTagAnalyzeResponse = {
+    tag?: string
+    count?: number
+  }
+
+  type SpaceSizeAnalyzeResponse = {
+    sizeRange?: string
+    count?: number
+  }
+
+  type SpaceUsageAnalyzeResponse = {
+    usedSize?: number
+    maxSize?: number
+    usedCount?: number
+    maxCount?: number
+    sizeUsageRatio?: number
+    countUsageRatio?: number
+  }
+
+  type SpaceUserAnalyzeResponse = {
+    period?: string
+    count?: number
+  }
+
   type Space = {
     id?: number
     spaceName?: string

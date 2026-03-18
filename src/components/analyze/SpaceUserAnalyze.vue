@@ -16,13 +16,13 @@
 import VChart from 'vue-echarts'
 import 'echarts'
 import { computed, ref, watchEffect } from 'vue'
-import { getSpaceUserAnalyzeUsingPost } from '@/api/spaceAnalyzeController.ts'
+import { getSpaceUserAnalyzeUsingPost } from '@/api/spaceAnalyzeController'
 import { message } from 'ant-design-vue'
 
 interface Props {
   queryAll?: boolean
   queryPublic?: boolean
-  spaceId?: number
+  spaceId?: number | string
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -54,7 +54,7 @@ const doSearch = (value: string) => {
 }
 
 // 图表数据
-const dataList = ref<API.SpaceCategoryAnalyzeResponse>([])
+const dataList = ref<API.SpaceUserAnalyzeResponse[]>([])
 // 加载状态
 const loading = ref(true)
 
@@ -86,8 +86,8 @@ watchEffect(() => {
 
 // 图表选项
 const options = computed(() => {
-  const periods = dataList.value.map((item) => item.period) // 时间区间
-  const counts = dataList.value.map((item) => item.count) // 上传数量
+  const periods = dataList.value.map((item: API.SpaceUserAnalyzeResponse) => item.period ?? '') // 时间区间
+  const counts = dataList.value.map((item: API.SpaceUserAnalyzeResponse) => item.count ?? 0) // 上传数量
 
   return {
     tooltip: { trigger: 'axis' },

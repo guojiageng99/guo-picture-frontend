@@ -10,13 +10,13 @@
 import VChart from 'vue-echarts'
 import 'echarts'
 import { computed, ref, watchEffect } from 'vue'
-import { getSpaceRankAnalyzeUsingPost } from '@/api/spaceAnalyzeController.ts'
+import { getSpaceRankAnalyzeUsingPost } from '@/api/spaceAnalyzeController'
 import { message } from 'ant-design-vue'
 
 interface Props {
   queryAll?: boolean
   queryPublic?: boolean
-  spaceId?: number
+  spaceId?: number | string
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -56,8 +56,10 @@ watchEffect(() => {
 
 // 图表选项
 const options = computed(() => {
-  const spaceNames = dataList.value.map((item) => item.spaceName)
-  const usageData = dataList.value.map((item) => (item.totalSize / (1024 * 1024)).toFixed(2)) // 转为 MB
+  const spaceNames = dataList.value.map((item: API.Space) => item.spaceName ?? '')
+  const usageData = dataList.value.map((item: API.Space) =>
+    ((item.totalSize ?? 0) / (1024 * 1024)).toFixed(2)
+  ) // 转为 MB
 
   return {
     tooltip: { trigger: 'axis' },

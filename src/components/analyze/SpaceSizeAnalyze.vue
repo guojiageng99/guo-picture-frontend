@@ -10,13 +10,13 @@
 import VChart from 'vue-echarts'
 import 'echarts'
 import { computed, ref, watchEffect } from 'vue'
-import { getSpaceSizeAnalyzeUsingPost } from '@/api/spaceAnalyzeController.ts'
+import { getSpaceSizeAnalyzeUsingPost } from '@/api/spaceAnalyzeController'
 import { message } from 'ant-design-vue'
 
 interface Props {
   queryAll?: boolean
   queryPublic?: boolean
-  spaceId?: number
+  spaceId?: number | string
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -25,7 +25,7 @@ const props = withDefaults(defineProps<Props>(), {
 })
 
 // 图表数据
-const dataList = ref<API.SpaceSizeAnalyzeResponse>([])
+const dataList = ref<API.SpaceSizeAnalyzeResponse[]>([])
 // 加载状态
 const loading = ref(true)
 
@@ -55,9 +55,9 @@ watchEffect(() => {
 
 // 图表选项
 const options = computed(() => {
-  const pieData = dataList.value.map((item) => ({
-    name: item.sizeRange,
-    value: item.count,
+  const pieData = dataList.value.map((item: API.SpaceSizeAnalyzeResponse) => ({
+    name: item.sizeRange ?? '',
+    value: item.count ?? 0,
   }))
 
   return {
