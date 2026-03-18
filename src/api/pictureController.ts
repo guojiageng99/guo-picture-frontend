@@ -217,6 +217,35 @@ export async function searchPictureByColorUsingPost(
   })
 }
 
+/** createPictureOutPaintingTask POST /api/picture/out_painting/create_task */
+export async function createPictureOutPaintingTaskUsingPost(
+  body: { pictureId?: number; parameters?: { xScale?: number; yScale?: number } },
+  options?: { [key: string]: any }
+) {
+  return request<API.BaseResponse<any>>('/api/picture/out_painting/create_task', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    data: body,
+    ...(options || {}),
+  })
+}
+
+/** getPictureOutPaintingTask GET /api/picture/out_painting/get_task */
+export async function getPictureOutPaintingTaskUsingGet(
+  params: { taskId?: string },
+  options?: { [key: string]: any }
+) {
+  return request<API.BaseResponse<any>>('/api/picture/out_painting/get_task', {
+    method: 'GET',
+    params: {
+      ...params,
+    },
+    ...(options || {}),
+  })
+}
+
 /** searchPictureByPicture POST /api/picture/search/picture */
 export async function searchPictureByPictureUsingPost(
   body: API.PictureSearchByPictureRequest,

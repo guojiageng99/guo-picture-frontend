@@ -70,8 +70,9 @@ const createTask = async () => {
   })
   if (res.data.code === 0 && res.data.data) {
     message.success('创建任务成功，请耐心等待，不要退出界面')
-    console.log(res.data.data.output.taskId)
-    taskId.value = res.data.data.output.taskId
+    // 兼容后端直接返回 taskId 或 output.taskId
+    const taskIdVal = res.data.data.taskId ?? res.data.data.output?.taskId
+    taskId.value = taskIdVal
     // 开启轮询
     startPolling()
   } else {
@@ -94,22 +95,21 @@ const startPolling = () => {
         taskId: taskId.value,
       })
       if (res.data.code === 0 && res.data.data) {
-        const taskResult = res.data.data.output
+        // 后端直接返回 GetOutPaintingTaskResponse，兼容 output 嵌套结构
+        const taskResult = res.data.data.output ?? res.data.data
         if (taskResult.taskStatus === 'SUCCEEDED') {
           message.success('扩图任务执行成功')
-          resultImageUrl.value = taskResult.outputImageUrl
-          // 清理轮询
+          resultImageUrl.value = taskResult.outputImageUrl ?? taskResult.outputImage
           clearPolling()
         } else if (taskResult.taskStatus === 'FAILED') {
           message.error('扩图任务执行失败')
-          // 清理轮询
           clearPolling()
         }
       }
-    } catch (error) {
+    } catch (error: unknown) {
       console.error('扩图任务轮询失败', error)
-      message.error('扩图任务轮询失败，' + error.message)
-      // 清理轮询
+      const errMsg = error instanceof Error ? error.message : String(error)
+      message.error('扩图任务查询失败，' + errMsg)
       clearPolling()
     }
   }, 3000) // 每 3 秒轮询一次

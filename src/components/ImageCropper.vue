@@ -1,13 +1,14 @@
 <template>
   <a-modal
     class="image-cropper"
-    v-model:visible="visible"
+    v-model:open="visible"
     title="编辑图片"
     :footer="false"
     @cancel="closeModal"
   >
-    <!-- 图片裁切组件 -->
+    <!-- 图片裁切组件：仅在有效图片 URL 时渲染，避免 vue-cropper 报错 -->
     <vue-cropper
+      v-if="imageUrl"
       ref="cropperRef"
       :img="imageUrl"
       output-type="png"
@@ -81,18 +82,22 @@ const changeScale = (num) => {
 
 // 向左旋转
 const rotateLeft = () => {
-  cropperRef.value.rotateLeft()
+  cropperRef.value?.rotateLeft()
   editAction(PICTURE_EDIT_ACTION_ENUM.ROTATE_LEFT)
 }
 
 // 向右旋转
 const rotateRight = () => {
-  cropperRef.value.rotateRight()
+  cropperRef.value?.rotateRight()
   editAction(PICTURE_EDIT_ACTION_ENUM.ROTATE_RIGHT)
 }
 
 // 确认裁切
 const handleConfirm = () => {
+  if (!cropperRef.value) {
+    message.error('裁切组件未就绪，请稍后重试')
+    return
+  }
   cropperRef.value.getCropBlob((blob: Blob) => {
     // blob 为已经裁切好的文件
     const fileName = (props.picture?.name || 'image') + '.png'
@@ -140,16 +145,17 @@ const openModal = () => {
 // 关闭弹窗
 const closeModal = () => {
   visible.value = false
-  // 断开 WebSocket 连接
   if (websocket) {
     websocket.disconnect()
   }
   editingUser.value = undefined
 }
 
-// 暴露函数给父组件
+// ✅ 把 visible 也暴露出去，兜底用
 defineExpose({
   openModal,
+  closeModal,
+  visible // 新增：暴露弹窗可见性变量
 })
 
 // --------- 实时编辑 ---------
@@ -296,3 +302,4 @@ const editAction = (action: string) => {
   height: 400px !important;
 }
 </style>
+

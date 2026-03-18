@@ -84,6 +84,9 @@
 </template>
 
 <script setup lang="ts">
+import { EditOutlined, FullscreenOutlined } from '@ant-design/icons-vue'
+import ImageCropper from '@/components/ImageCropper.vue'
+import ImageOutPainting from '@/components/ImageOutPainting.vue'
 import PictureUpload from '@/components/PictureUpload.vue'
 import UrlPictureUpload from '@/components/UrlPictureUpload.vue'
 import { computed, h, onMounted, reactive, ref, watchEffect } from 'vue'
@@ -199,13 +202,18 @@ onMounted(() => {
   getOldPicture()
 })
 
-// ----- 图片编辑器引用 ------
+// 图片编辑弹窗引用
 const imageCropperRef = ref()
 
 // 编辑图片
-const doEditPicture = async () => {
+const doEditPicture = () => {
+  if (!picture.value?.url) {
+    message.error('图片地址无效，请重新上传图片')
+    return
+  }
   imageCropperRef.value?.openModal()
 }
+
 
 // 编辑成功事件
 const onCropSuccess = (newPicture: API.PictureVO) => {
