@@ -17,7 +17,7 @@ export default class PictureEditWebSocket {
    */
   connect() {
     const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:'
-    const wsHost = import.meta.env.DEV ? location.host : '49.232.171.218'
+    const wsHost = import.meta.env.DEV ? location.host : '49.232.171.218:9124'
     const params = new URLSearchParams({ pictureId: String(this.pictureId) })
     if (this.spaceId != null && this.spaceId !== '') {
       params.set('spaceId', String(this.spaceId))

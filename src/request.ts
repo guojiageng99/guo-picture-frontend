@@ -2,7 +2,8 @@ import axios from 'axios'
 import { message } from 'ant-design-vue'
 
 // 区分开发和生产环境：开发时用空 baseURL 走 Vite 代理，避免跨域导致 Cookie 无法设置
-const PROD_BASE_URL = 'http://49.232.171.218'
+// 生产环境需包含后端端口 9123
+const PROD_BASE_URL = ''
 // 创建 Axios 实例
 const myAxios = axios.create({
   baseURL: import.meta.env.DEV ? '' : PROD_BASE_URL,

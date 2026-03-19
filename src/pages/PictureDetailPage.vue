@@ -158,13 +158,16 @@ const doEdit = () => {
   })
 }
 
-// 删除数据
+// 删除数据（团队/私有空间需传 spaceId，分表才能正确查到并删除）
 const doDelete = async () => {
   const id = picture.value.id
   if (!id) {
     return
   }
-  const res = await deletePictureUsingPost({ id })
+  const res = await deletePictureUsingPost({
+    id,
+    spaceId: picture.value.spaceId ?? undefined,
+  })
   if (res.data.code === 0) {
     message.success('删除成功')
   } else {

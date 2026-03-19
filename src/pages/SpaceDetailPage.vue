@@ -58,6 +58,7 @@
       :showOp="true"
       :canEdit="canEditPicture"
       :canDelete="canDeletePicture"
+      :spaceId="id"
       :onReload="fetchData"
     />
     <!-- 分页 -->

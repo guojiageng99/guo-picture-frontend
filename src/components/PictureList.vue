@@ -62,6 +62,8 @@ interface Props {
   showOp?: boolean
   canEdit?: boolean
   canDelete?: boolean
+  /** 当前空间 id，空间详情页传入，删除时若 picture.spaceId 缺失则用此兜底 */
+  spaceId?: string | number
   onReload?: () => void
 }
 
@@ -110,9 +112,11 @@ const doDelete = async (picture, e) => {
   if (!id) {
     return
   }
+  // picture.spaceId 可能因后端未返回或精度丢失而缺失，用 props.spaceId 兜底（空间详情页会传入）
+  const spaceId = picture.spaceId ?? props.spaceId
   const res = await deletePictureUsingPost({
     id,
-    spaceId: picture.spaceId ?? undefined,
+    spaceId: spaceId != null && spaceId !== '' ? spaceId : undefined,
   })
   if (res.data.code === 0) {
     message.success('删除成功')

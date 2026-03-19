@@ -115,6 +115,8 @@ declare namespace API {
 
   type DeleteRequest = {
     id?: number
+    /** 空间 id，分表时必须传递。公共图库传 0 */
+    spaceId?: number | string
   }
 
   type getPictureByIdUsingGETParams = {
