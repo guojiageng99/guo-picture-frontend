@@ -102,7 +102,7 @@ const doEdit = (picture, e) => {
   })
 }
 
-// 删除数据
+// 删除数据（团队/私有空间需传 spaceId，分表才能正确查到并删除）
 const doDelete = async (picture, e) => {
   // 阻止冒泡
   e.stopPropagation()
@@ -110,7 +110,10 @@ const doDelete = async (picture, e) => {
   if (!id) {
     return
   }
-  const res = await deletePictureUsingPost({ id })
+  const res = await deletePictureUsingPost({
+    id,
+    spaceId: picture.spaceId ?? undefined,
+  })
   if (res.data.code === 0) {
     message.success('删除成功')
     props.onReload?.()
