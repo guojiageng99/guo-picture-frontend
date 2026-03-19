@@ -139,9 +139,10 @@ const handleSubmit = async (values: any) => {
   // 操作成功
   if (res.data.code === 0 && res.data.data) {
     message.success('创建成功')
-    // 跳转到图片详情页
+    // 跳转到图片详情页（团队空间需带 spaceId，分表查询才能正确查到）
     router.push({
-      path: `/picture/${pictureId}`,
+      path: `/picture/${String(pictureId)}`,
+      query: spaceId.value ? { spaceId: String(spaceId.value) } : {},
     })
   } else {
     message.error('创建失败，' + res.data.message)

@@ -124,7 +124,9 @@ declare namespace API {
 
   type getPictureVOByIdUsingGETParams = {
     /** id */
-    id?: number
+    id?: number | string
+    /** spaceId，分表时必须传，团队/私有空间查图需带此参数 */
+    spaceId?: number | string
   }
 
   type getUserByIdUsingGETParams = {

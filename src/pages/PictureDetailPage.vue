@@ -95,7 +95,7 @@ import {
   EditOutlined,
   ShareAltOutlined,
 } from '@ant-design/icons-vue'
-import { useRouter } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import { downloadImage, formatSize, toHexColor } from '@/utils'
 import ShareModal from '@/components/ShareModal.vue'
 import { useLoginUserStore } from '@/stores/useLoginUserStore'
@@ -105,6 +105,7 @@ interface Props {
 }
 
 const props = defineProps<Props>()
+const route = useRoute()
 const picture = ref<API.PictureVO>({})
 
 const loginUserStore = useLoginUserStore()
@@ -122,11 +123,13 @@ const canEdit = computed(() => {
 // 删除权限与编辑权限相同
 const canDelete = canEdit
 
-// 获取图片详情
+// 获取图片详情（团队空间需传 spaceId，分表才能正确查到）
 const fetchPictureDetail = async () => {
   try {
+    const spaceId = route.query?.spaceId
     const res = await getPictureVoByIdUsingGet({
       id: props.id,
+      ...(spaceId != null && spaceId !== '' ? { spaceId } : {}),
     })
     if (res.data.code === 0 && res.data.data) {
       picture.value = res.data.data
@@ -180,7 +183,8 @@ const shareModalRef = ref()
 const shareLink = ref<string>()
 // 分享
 const doShare = () => {
-  shareLink.value = `${window.location.protocol}//${window.location.host}/picture/${picture.value.id}`
+  const spaceQuery = picture.value.spaceId ? `?spaceId=${picture.value.spaceId}` : ''
+  shareLink.value = `${window.location.protocol}//${window.location.host}/picture/${picture.value.id}${spaceQuery}`
   if (shareModalRef.value) {
     shareModalRef.value.openModal()
   }

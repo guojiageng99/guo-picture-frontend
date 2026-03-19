@@ -74,10 +74,11 @@ const props = withDefaults(defineProps<Props>(), {
 })
 
 const router = useRouter()
-// 跳转至图片详情页
+// 跳转至图片详情页（团队/私有空间需带 spaceId，分表才能正确查到）
 const doClickPicture = (picture: API.PictureVO) => {
   router.push({
-    path: `/picture/${picture.id}`,
+    path: `/picture/${String(picture.id)}`,
+    query: picture.spaceId ? { spaceId: String(picture.spaceId) } : {},
   })
 }
 
@@ -126,7 +127,8 @@ const shareLink = ref<string>()
 const doShare = (picture, e) => {
   // 阻止冒泡
   e.stopPropagation()
-  shareLink.value = `${window.location.protocol}//${window.location.host}/picture/${picture.id}`
+  const spaceQuery = picture.spaceId ? `?spaceId=${picture.spaceId}` : ''
+  shareLink.value = `${window.location.protocol}//${window.location.host}/picture/${picture.id}${spaceQuery}`
   if (shareModalRef.value) {
     shareModalRef.value.openModal()
   }
