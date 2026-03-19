@@ -198,15 +198,14 @@ const searchParams = reactive<API.PictureQueryRequest>({
   sortOrder: 'descend',
 })
 
-// 获取数据
+// 获取数据（不传 nullSpaceId，管理员可查看全部空间的图片）
 const fetchData = async () => {
   const res = await listPictureByPageUsingPost({
     ...searchParams,
-    nullSpaceId: true,
   })
   if (res.data.code === 0 && res.data.data) {
     dataList.value = res.data.data.records ?? []
-    total.value = res.data.data.total ?? 0
+    total.value = Number(res.data.data.total ?? 0)
   } else {
     message.error('获取数据失败，' + res.data.message)
   }

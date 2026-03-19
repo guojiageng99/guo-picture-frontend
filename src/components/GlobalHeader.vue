@@ -55,7 +55,7 @@
 <script lang="ts" setup>
 import { computed, h, ref } from 'vue'
 import { RouterLink } from 'vue-router'
-import { CodeOutlined, HomeOutlined, LogoutOutlined } from '@ant-design/icons-vue'
+import { CodeOutlined, HomeOutlined, LogoutOutlined, UserOutlined } from '@ant-design/icons-vue'
 import { useRouter, useRoute } from 'vue-router'
 import { useLoginUserStore } from '@/stores/useLoginUserStore'
 import { message } from 'ant-design-vue'

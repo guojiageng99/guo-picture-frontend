@@ -14,6 +14,7 @@ import SpaceAnalyzePage from '@/pages/SpaceAnalyzePage.vue'
 import MySpacePage from '@/pages/MySpacePage.vue'
 import SearchPicturePage from '@/pages/SearchPicturePage.vue'
 import SpaceUserManagePage from '@/pages/admin/SpaceUserManagePage.vue'
+import TeamSpacePage from '@/pages/TeamSpacePage.vue'
 
 
 const router = createRouter({
@@ -91,6 +92,11 @@ const router = createRouter({
       path: '/my_space',
       name: '我的空间',
       component: MySpacePage,
+    },
+    {
+      path: '/team_space',
+      name: '团队空间',
+      component: TeamSpacePage,
     },
     {
       path: '/search_picture',

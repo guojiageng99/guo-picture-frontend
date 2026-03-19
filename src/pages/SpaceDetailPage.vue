@@ -38,7 +38,7 @@
           <a-progress
             type="circle"
             :size="42"
-            :percent="((space.totalSize * 100) / space.maxSize).toFixed(1)"
+            :percent="space.maxSize ? Number((((space.totalSize ?? 0) * 100) / space.maxSize).toFixed(1)) : 0"
           />
         </a-tooltip>
       </a-space>
@@ -60,21 +60,13 @@
       :canDelete="canDeletePicture"
       :onReload="fetchData"
     />
-    <a-pagination
-      style="text-align: right"
-      v-model:current="searchParams.current"
-      v-model:pageSize="searchParams.pageSize"
-      :total="total"
-      :show-total="() => `图片总数 ${total} / ${space.maxCount}`"
-      @change="onPageChange"
-    />
-
     <!-- 分页 -->
     <a-pagination
       style="text-align: right"
       v-model:current="searchParams.current"
       v-model:pageSize="searchParams.pageSize"
       :total="total"
+      :show-total="() => `图片总数 ${total} / ${space.maxCount}`"
       @change="onPageChange"
     />
     <BatchEditPictureModal
@@ -188,7 +180,7 @@ const fetchData = async () => {
   const res = await listPictureVoByPageUsingPost(params)
   if (res.data.code === 0 && res.data.data) {
     dataList.value = res.data.data.records ?? []
-    total.value = res.data.data.total ?? 0
+    total.value = Number(res.data.data.total ?? 0)
   } else {
     message.error('获取数据失败，' + res.data.message)
   }

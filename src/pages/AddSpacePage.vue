@@ -29,9 +29,9 @@
         * 目前仅支持开通普通版，如需升级空间，请联系
         <a target="_blank">程序员烤冷面</a>
       </a-typography-paragraph>
-      <a-typography-paragraph v-for="spaceLevel in spaceLevelList">
-        {{ spaceLevel.text }}：大小 {{ formatSize(spaceLevel.maxSize) }}，数量
-        {{ spaceLevel.maxCount }}
+      <a-typography-paragraph v-for="(spaceLevel, idx) in spaceLevelList" :key="idx">
+        {{ spaceLevel?.text ?? spaceLevel?.name ?? '普通版' }}：大小 {{ formatSize(spaceLevel?.maxSize) }}，数量
+        {{ spaceLevel?.maxCount ?? 0 }}
       </a-typography-paragraph>
     </a-card>
   </div>
@@ -48,6 +48,7 @@ import {
 } from '@/api/spaceController.ts'
 import { useRoute, useRouter } from 'vue-router'
 import {
+  SPACE_LEVEL_ENUM,
   SPACE_LEVEL_MAP,
   SPACE_LEVEL_OPTIONS,
   SPACE_TYPE_ENUM,
@@ -76,11 +77,16 @@ const spaceLevelList = ref<API.SpaceLevel[]>([])
 
 // 获取空间级别
 const fetchSpaceLevelList = async () => {
-  const res = await listSpaceLevelUsingGet()
-  if (res.data.code === 0 && res.data.data) {
-    spaceLevelList.value = res.data.data
-  } else {
-    message.error('获取空间级别失败，' + res.data.message)
+  try {
+    const res = await listSpaceLevelUsingGet()
+    if (res.data.code === 0 && res.data.data) {
+      spaceLevelList.value = res.data.data
+    } else {
+      message.error('获取空间级别失败，' + res.data.message)
+    }
+  } catch (e) {
+    message.error('获取空间级别失败，请稍后重试')
+    // API 失败时仍保留表单可用，空间级别可手动选择
   }
 }
 

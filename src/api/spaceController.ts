@@ -79,9 +79,9 @@ export async function listSpaceVoByPageUsingPost(
   })
 }
 
-/** listSpaceLevel GET /api/space/level */
+/** listSpaceLevel GET /api/space/list/level */
 export async function listSpaceLevelUsingGet(options?: { [key: string]: any }) {
-  return request<API.BaseResponseListSpaceLevel_>('/api/space/level', {
+  return request<API.BaseResponseListSpaceLevel_>('/api/space/list/level', {
     method: 'GET',
     ...(options || {}),
   })

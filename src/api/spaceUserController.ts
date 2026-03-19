@@ -2,9 +2,9 @@
 /* eslint-disable */
 import request from '@/request'
 
-/** listMyTeamSpace POST /api/spaceUser/my/team */
+/** listMyTeamSpace POST /api/spaceUser/list/my */
 export async function listMyTeamSpaceUsingPost(options?: { [key: string]: any }) {
-  return request<API.BaseResponseListSpaceUserVO_>('/api/spaceUser/my/team', {
+  return request<API.BaseResponseListSpaceUserVO_>('/api/spaceUser/list/my', {
     method: 'POST',
     ...(options || {}),
   })

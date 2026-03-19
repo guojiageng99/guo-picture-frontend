@@ -16,10 +16,10 @@
 </template>
 <script lang="ts" setup>
 import { h, ref } from 'vue'
-import { PictureOutlined, UserOutlined } from '@ant-design/icons-vue'
+import { PictureOutlined, UserOutlined, TeamOutlined } from '@ant-design/icons-vue'
 import { useRouter } from 'vue-router'
 
-// 侧边栏菜单：公共图库、我的空间
+// 侧边栏菜单：公共图库、我的空间、团队空间
 const menuItems = [
   {
     key: '/',
@@ -30,6 +30,11 @@ const menuItems = [
     key: '/my_space',
     label: '我的空间',
     icon: () => h(UserOutlined),
+  },
+  {
+    key: '/team_space',
+    label: '团队空间',
+    icon: () => h(TeamOutlined),
   },
 ]
 

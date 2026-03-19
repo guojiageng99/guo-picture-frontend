@@ -28,7 +28,7 @@ import { message } from 'ant-design-vue'
 import { editPictureUsingPost } from '@/api/pictureController.ts'
 
 interface Props {
-  spaceId?: number
+  spaceId?: number | string
   pictureList?: API.PictureVO[]
   onSuccess?: () => void
 }
