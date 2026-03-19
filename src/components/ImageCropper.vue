@@ -70,26 +70,28 @@ const isTeamSpace = computed(() => {
 // 获取图片裁切器的引用
 const cropperRef = ref()
 
-// 缩放比例
-const changeScale = (num) => {
+// 缩放比例（skipBroadcast=true 表示仅应用远程操作，不广播避免循环）
+const changeScale = (num: number, skipBroadcast = false) => {
   cropperRef.value?.changeScale(num)
-  if (num > 0) {
-    editAction(PICTURE_EDIT_ACTION_ENUM.ZOOM_IN)
-  } else {
-    editAction(PICTURE_EDIT_ACTION_ENUM.ZOOM_OUT)
+  if (!skipBroadcast) {
+    editAction(num > 0 ? PICTURE_EDIT_ACTION_ENUM.ZOOM_IN : PICTURE_EDIT_ACTION_ENUM.ZOOM_OUT)
   }
 }
 
 // 向左旋转
-const rotateLeft = () => {
+const rotateLeft = (skipBroadcast = false) => {
   cropperRef.value?.rotateLeft()
-  editAction(PICTURE_EDIT_ACTION_ENUM.ROTATE_LEFT)
+  if (!skipBroadcast) {
+    editAction(PICTURE_EDIT_ACTION_ENUM.ROTATE_LEFT)
+  }
 }
 
 // 向右旋转
-const rotateRight = () => {
+const rotateRight = (skipBroadcast = false) => {
   cropperRef.value?.rotateRight()
-  editAction(PICTURE_EDIT_ACTION_ENUM.ROTATE_RIGHT)
+  if (!skipBroadcast) {
+    editAction(PICTURE_EDIT_ACTION_ENUM.ROTATE_RIGHT)
+  }
 }
 
 // 确认裁切
@@ -195,8 +197,11 @@ const initWebsocket = () => {
   if (websocket) {
     websocket.disconnect()
   }
-  // 创建 websocket 实例
-  websocket = new PictureEditWebSocket(pictureId)
+  // 创建 websocket 实例（后端握手需 spaceId 用于分表查询，pictureId 用 string 避免大数精度丢失）
+  websocket = new PictureEditWebSocket(
+    String(pictureId),
+    props.spaceId != null && props.spaceId !== '' ? props.spaceId : undefined,
+  )
   // 建立连接
   websocket.connect()
 
@@ -220,19 +225,19 @@ const initWebsocket = () => {
   websocket.on(PICTURE_EDIT_MESSAGE_TYPE_ENUM.EDIT_ACTION, (msg) => {
     console.log('收到编辑操作的消息：', msg)
     message.info(msg.message)
-    // 根据收到的编辑操作，执行相应的操作
+    // 仅应用远程操作，不再次广播（skipBroadcast=true）
     switch (msg.editAction) {
       case PICTURE_EDIT_ACTION_ENUM.ROTATE_LEFT:
-        rotateLeft()
+        rotateLeft(true)
         break
       case PICTURE_EDIT_ACTION_ENUM.ROTATE_RIGHT:
-        rotateRight()
+        rotateRight(true)
         break
       case PICTURE_EDIT_ACTION_ENUM.ZOOM_IN:
-        changeScale(1)
+        changeScale(1, true)
         break
       case PICTURE_EDIT_ACTION_ENUM.ZOOM_OUT:
-        changeScale(-1)
+        changeScale(-1, true)
         break
     }
   })

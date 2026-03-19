@@ -1,25 +1,30 @@
 export default class PictureEditWebSocket {
-  private pictureId: number
+  private pictureId: number | string
+  private spaceId?: number | string
   private socket: WebSocket | null
   private eventHandlers: any
 
-  constructor(pictureId: number) {
-    this.pictureId = pictureId // 当前编辑的图片 ID
-    this.socket = null // WebSocket 实例
-    this.eventHandlers = {} // 自定义事件处理器
+  constructor(pictureId: number | string, spaceId?: number | string) {
+    this.pictureId = pictureId
+    this.spaceId = spaceId
+    this.socket = null
+    this.eventHandlers = {}
   }
 
   /**
    * 初始化 WebSocket 连接
+   * 开发环境走 Vite 代理同源连接，确保 Cookie 随请求发送；生产环境直连后端
    */
   connect() {
-    const DEV_BASE_URL = 'ws://localhost:9123'
-    // 线上地址
-    const PROD_BASE_URL = 'ws://49.232.171.218'
-    const url = `${DEV_BASE_URL}/api/ws/picture/edit?pictureId=${this.pictureId}`
+    const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:'
+    const wsHost = import.meta.env.DEV ? location.host : '49.232.171.218'
+    const params = new URLSearchParams({ pictureId: String(this.pictureId) })
+    if (this.spaceId != null && this.spaceId !== '') {
+      params.set('spaceId', String(this.spaceId))
+    }
+    const url = `${wsProtocol}//${wsHost}/api/ws/picture/edit?${params.toString()}`
     this.socket = new WebSocket(url)
 
-    // 设置携带 cookie
     this.socket.binaryType = 'blob'
 
     // 监听连接成功事件
