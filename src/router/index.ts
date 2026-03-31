@@ -7,6 +7,8 @@ import UserProfilePage from '@/pages/user/UserProfilePage.vue'
 import UserManagePage from '@/pages/admin/UserManagePage.vue'
 import AddPicturePage from '@/pages/AddPicturePage.vue'
 import PictureManagePage from '@/pages/admin/PictureManagePage.vue'
+import TagManagePage from '@/pages/admin/TagManagePage.vue'
+import CategoryManagePage from '@/pages/admin/CategoryManagePage.vue'
 import PictureDetailPage from '@/pages/PictureDetailPage.vue'
 import AddPictureBatchPage from '@/pages/AddPictureBatchPage.vue'
 import SpaceManagePage from '@/pages/admin/SpaceManagePage.vue'
@@ -71,6 +73,18 @@ const router = createRouter({
       path: '/admin/pictureManage',
       name: '图片管理',
       component: PictureManagePage,
+      meta: { access: AccessEnum.ADMIN },
+    },
+    {
+      path: '/admin/tagManage',
+      name: '标签管理',
+      component: TagManagePage,
+      meta: { access: AccessEnum.ADMIN },
+    },
+    {
+      path: '/admin/categoryManage',
+      name: '分类管理',
+      component: CategoryManagePage,
       meta: { access: AccessEnum.ADMIN },
     },
     {

@@ -281,7 +281,53 @@ declare namespace API {
 
   type PictureTagCategory = {
     categoryList?: string[]
+    popularCategoryList?: string[]
+    popularTagList?: string[]
     tagList?: string[]
+  }
+
+  type PictureTag = {
+    id?: number
+    tagName?: string
+    usageCount?: number
+    sortOrder?: number
+    createTime?: string
+    updateTime?: string
+  }
+
+  type PictureCategory = {
+    id?: number
+    categoryName?: string
+    usageCount?: number
+    sortOrder?: number
+    createTime?: string
+    updateTime?: string
+  }
+
+  type PagePictureTag_ = {
+    records?: PictureTag[]
+    total?: number
+    current?: number
+    size?: number
+  }
+
+  type PagePictureCategory_ = {
+    records?: PictureCategory[]
+    total?: number
+    current?: number
+    size?: number
+  }
+
+  type BaseResponsePagePictureTag_ = {
+    code?: number
+    data?: PagePictureTag_
+    message?: string
+  }
+
+  type BaseResponsePagePictureCategory_ = {
+    code?: number
+    data?: PagePictureCategory_
+    message?: string
   }
 
   type PictureUpdateRequest = {

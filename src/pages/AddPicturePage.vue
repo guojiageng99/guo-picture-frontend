@@ -60,20 +60,24 @@
         />
       </a-form-item>
       <a-form-item name="category" label="分类">
-        <a-auto-complete
+        <a-select
           v-model:value="pictureForm.category"
-          placeholder="请输入分类"
+          placeholder="请选择分类（来自字典）"
           :options="categoryOptions"
           allow-clear
+          show-search
+          option-filter-prop="label"
         />
       </a-form-item>
       <a-form-item name="tags" label="标签">
         <a-select
           v-model:value="pictureForm.tags"
-          mode="tags"
-          placeholder="请输入标签"
+          mode="multiple"
+          placeholder="请选择标签（来自字典，可多选）"
           :options="tagOptions"
           allow-clear
+          show-search
+          option-filter-prop="label"
         />
       </a-form-item>
       <a-form-item>
@@ -95,7 +99,7 @@ import {
   editPictureUsingPost,
   getPictureVoByIdUsingGet,
   listPictureTagCategoryUsingGet,
-} from '@/api/pictureController.ts'
+} from '@/api/pictureController'
 import { getSpaceVoByIdUsingGet } from '@/api/spaceController.ts'
 import { useRoute, useRouter } from 'vue-router'
 
