@@ -19,7 +19,6 @@
       </a-col>
       <a-col flex="120px">
         <div class="user-login-status">
-          <!-- 已登录：显示代码图标 + 用户名 + 下拉菜单 -->
           <div v-if="loginUserStore.loginUser.id">
             <a-dropdown placement="bottomRight">
               <a-space :size="8" align="center" style="cursor: pointer">
@@ -28,6 +27,12 @@
               </a-space>
               <template #overlay>
                 <a-menu>
+                  <a-menu-item>
+                    <router-link to="/user/profile">
+                      <SettingOutlined />
+                      个人资料
+                    </router-link>
+                  </a-menu-item>
                   <a-menu-item>
                     <router-link to="/my_space">
                       <UserOutlined />
@@ -43,7 +48,6 @@
             </a-dropdown>
           </div>
 
-          <!-- 未登录：显示登录按钮 -->
           <div v-else>
             <a-button type="primary" size="small" @click="goToLogin">登录</a-button>
           </div>
@@ -55,72 +59,46 @@
 <script lang="ts" setup>
 import { computed, h, ref } from 'vue'
 import { RouterLink } from 'vue-router'
-import { CodeOutlined, HomeOutlined, LogoutOutlined, UserOutlined } from '@ant-design/icons-vue'
+import {
+  CodeOutlined,
+  HomeOutlined,
+  LogoutOutlined,
+  SettingOutlined,
+  UserOutlined,
+} from '@ant-design/icons-vue'
 import { useRouter, useRoute } from 'vue-router'
 import { useLoginUserStore } from '@/stores/useLoginUserStore'
 import { message } from 'ant-design-vue'
 import type { MenuProps } from 'ant-design-vue'
 import { userLogoutUsingPost } from '@/api/userController'
+import { HEADER_MENU_CONFIG } from '@/access/headerMenuConfig'
+import { canAccess } from '@/access/checkAccess'
 
 const loginUserStore = useLoginUserStore()
 const router = useRouter()
 const route = useRoute()
 
-// 跳转到登录页面
 const goToLogin = () => {
   router.push('/user/login')
 }
 
-// 菜单列表（顺序：主页、创建图片、用户管理、图片管理、空间管理）
-const originItems = [
-  {
-    key: '/',
-    icon: () => h(HomeOutlined),
-    label: '主页',
-    title: '主页',
-  },
-  {
-    key: '/add_picture',
-    label: '创建图片',
-    title: '创建图片',
-  },
-  {
-    key: '/admin/userManage',
-    label: '用户管理',
-    title: '用户管理',
-  },
-  {
-    key: '/admin/pictureManage',
-    label: '图片管理',
-    title: '图片管理',
-  },
-  {
-    key: '/admin/spaceManage',
-    label: '空间管理',
-    title: '空间管理',
-  },
-]
-
-// 过滤菜单项
-const filterMenus = (menus = [] as MenuProps['items']) => {
-  return menus?.filter((menu) => {
-    if (!menu || !menu.key) {
-      return false
+const buildMenuItems = (): MenuProps['items'] => {
+  const loginUser = loginUserStore.loginUser
+  return HEADER_MENU_CONFIG.filter((m) => canAccess(loginUser, m.access)).map((m) => {
+    const item: NonNullable<MenuProps['items']>[number] = {
+      key: m.key,
+      label: m.label,
+      title: m.title,
     }
-    if (typeof menu.key === 'string' && menu.key.startsWith('/admin')) {
-      const loginUser = loginUserStore.loginUser
-      if (!loginUser || loginUser.userRole !== 'admin') {
-        return false
-      }
+    if (m.key === '/') {
+      item.icon = () => h(HomeOutlined)
     }
-    return true
+    return item
   })
 }
 
-// 展示在菜单的路由数组
-const items = computed<MenuProps['items']>(() => filterMenus(originItems))
+const items = computed<MenuProps['items']>(() => buildMenuItems())
 
-// 用户注销
 const doLogout = async () => {
   try {
     const res = await userLogoutUsingPost()
@@ -134,7 +112,6 @@ const doLogout = async () => {
       message.error('退出登录失败，' + res.data.message)
     }
   } catch (error) {
-    // 如果 API 不存在，直接清除登录状态
     loginUserStore.setLoginUser({
       userName: '未登录',
     })
@@ -143,14 +120,11 @@ const doLogout = async () => {
   }
 }
 
-// 当前要高亮的菜单项
 const current = ref<string[]>([route.path])
-// 监听路由变化，更新高亮菜单项
 router.afterEach((to) => {
   current.value = [to.path]
 })
 
-// 路由跳转事件
 const doMenuClick = ({ key }: { key: string }) => {
   if (key !== 'others') {
     router.push({

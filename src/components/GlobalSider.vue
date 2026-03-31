@@ -1,10 +1,6 @@
 <template>
   <div id="globalSider">
-    <a-layout-sider
-      width="200"
-      breakpoint="lg"
-      collapsed-width="0"
-    >
+    <a-layout-sider width="200" breakpoint="lg" collapsed-width="0">
       <a-menu
         v-model:selectedKeys="current"
         mode="inline"
@@ -15,39 +11,38 @@
   </div>
 </template>
 <script lang="ts" setup>
-import { h, ref } from 'vue'
+import { computed, h, ref } from 'vue'
 import { PictureOutlined, UserOutlined, TeamOutlined } from '@ant-design/icons-vue'
-import { useRouter } from 'vue-router'
+import { useRouter, useRoute } from 'vue-router'
+import { useLoginUserStore } from '@/stores/useLoginUserStore'
+import { SIDER_MENU_CONFIG } from '@/access/siderMenuConfig'
+import { canAccess } from '@/access/checkAccess'
 
-// 侧边栏菜单：公共图库、我的空间、团队空间
-const menuItems = [
-  {
-    key: '/',
-    icon: () => h(PictureOutlined),
-    label: '公共图库',
-  },
-  {
-    key: '/my_space',
-    label: '我的空间',
-    icon: () => h(UserOutlined),
-  },
-  {
-    key: '/team_space',
-    label: '团队空间',
-    icon: () => h(TeamOutlined),
-  },
-]
+const iconByKey: Record<string, () => ReturnType<typeof h>> = {
+  '/': () => h(PictureOutlined),
+  '/my_space': () => h(UserOutlined),
+  '/team_space': () => h(TeamOutlined),
+}
 
+const loginUserStore = useLoginUserStore()
 const router = useRouter()
-// 当前要高亮的菜单项
+const route = useRoute()
+
+const menuItems = computed(() => {
+  const u = loginUserStore.loginUser
+  return SIDER_MENU_CONFIG.filter((m) => canAccess(u, m.access)).map((m) => ({
+    key: m.key,
+    label: m.label,
+    icon: iconByKey[m.key],
+  }))
+})
+
 const current = ref<string[]>([])
-// 监听路由变化，更新高亮菜单项
 router.afterEach((to) => {
   current.value = [to.path]
 })
 
-// 路由跳转事件
-const doMenuClick = ({ key }) => {
+const doMenuClick = ({ key }: { key: string }) => {
   router.push(key)
 }
 </script>

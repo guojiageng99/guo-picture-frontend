@@ -510,6 +510,13 @@ declare namespace API {
     userRole?: string
   }
 
+  /** 当前用户更新个人资料 */
+  type UserUpdateMyRequest = {
+    userAvatar?: string
+    userName?: string
+    userProfile?: string
+  }
+
   type UserVO = {
     createTime?: string
     id?: number
