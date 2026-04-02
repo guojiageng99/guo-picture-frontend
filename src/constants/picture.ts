@@ -28,6 +28,13 @@ export const PIC_REVIEW_STATUS_OPTIONS = Object.keys(PIC_REVIEW_STATUS_MAP).map(
   }
 })
 
+/** AI 初审状态（与后端 picture.aiReviewStatus 一致） */
+export const PIC_AI_REVIEW_STATUS_MAP: Record<number, string> = {
+  0: '待 AI / 无结果',
+  1: 'AI 已通过',
+  2: 'AI 已拒绝',
+}
+
 /**
  * 图片编辑消息类型枚举
  */

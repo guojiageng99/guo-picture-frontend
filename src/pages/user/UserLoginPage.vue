@@ -28,8 +28,9 @@
 <script lang="ts" setup>
 import { reactive } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { userLoginUsingPost } from '@/api/userController.ts'
-import { useLoginUserStore } from '@/stores/useLoginUserStore.ts'
+import { userLoginUsingPost } from '@/api/userController'
+import { useLoginUserStore } from '@/stores/useLoginUserStore'
+import { useUnreadMessageStore } from '@/stores/useUnreadMessageStore'
 import { message } from 'ant-design-vue'
 
 // 用于接受表单输入的值
@@ -41,6 +42,7 @@ const formState = reactive<API.UserLoginRequest>({
 const router = useRouter()
 const route = useRoute()
 const loginUserStore = useLoginUserStore()
+const unreadStore = useUnreadMessageStore()
 
 /**
  * 提交表单
@@ -51,6 +53,7 @@ const handleSubmit = async (values: any) => {
   // 登录成功，把登录态保存到全局状态中
   if (res.data.code === 0 && res.data.data) {
     await loginUserStore.fetchLoginUser()
+    await unreadStore.refresh()
     message.success('登录成功')
     const redirect = route.query.redirect as string | undefined
     const safe =

@@ -7,6 +7,24 @@
         <a-input v-model:value="formState.userAccount" placeholder="请输入账号" />
       </a-form-item>
       <a-form-item
+        name="userPhone"
+        :rules="[
+          { required: true, message: '请输入手机号' },
+          { pattern: /^1[3-9]\d{9}$/, message: '请输入 11 位中国大陆手机号' },
+        ]"
+      >
+        <a-input v-model:value="formState.userPhone" placeholder="手机号" maxlength="11" />
+      </a-form-item>
+      <a-form-item
+        name="userEmail"
+        :rules="[
+          { required: true, message: '请输入邮箱' },
+          { type: 'email', message: '邮箱格式不正确' },
+        ]"
+      >
+        <a-input v-model:value="formState.userEmail" placeholder="邮箱" />
+      </a-form-item>
+      <a-form-item
         name="userPassword"
         :rules="[
           { required: true, message: '请输入密码' },
@@ -37,34 +55,25 @@
 <script lang="ts" setup>
 import { reactive } from 'vue'
 import { useRouter } from 'vue-router'
-import { userRegisterUsingPost } from '@/api/userController.ts'
-import { useLoginUserStore } from '@/stores/useLoginUserStore.ts'
+import { userRegisterUsingPost } from '@/api/userController'
 import { message } from 'ant-design-vue'
 
-
-// 用于接受表单输入的值
 const formState = reactive<API.UserRegisterRequest>({
   userAccount: '',
   userPassword: '',
   checkPassword: '',
+  userPhone: '',
+  userEmail: '',
 })
-
-const loginUserStore = useLoginUserStore()
 
 const router = useRouter()
 
-/**
- * 提交表单
- * @param values
- */
-const handleSubmit = async (values: any) => {
-  // 判断两次输入的密码是否一致
+const handleSubmit = async (values: API.UserRegisterRequest) => {
   if (formState.userPassword !== formState.checkPassword) {
     message.error('二次输入的密码不一致')
     return
   }
   const res = await userRegisterUsingPost(values)
-  // 注册成功，跳转到登录页面
   if (res.data.code === 0 && res.data.data) {
     message.success('注册成功')
     router.push({
@@ -75,7 +84,6 @@ const handleSubmit = async (values: any) => {
     message.error('注册失败，' + res.data.message)
   }
 }
-
 </script>
 
 <style scoped>

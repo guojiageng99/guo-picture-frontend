@@ -28,6 +28,15 @@
               <template #overlay>
                 <a-menu>
                   <a-menu-item>
+                    <router-link to="/user/messages" @click="onOpenMessages">
+                      <BellOutlined />
+                      消息中心
+                      <span v-if="unreadStore.unreadCount > 0" class="unread-badge">
+                        {{ unreadStore.unreadCount > 99 ? '99+' : unreadStore.unreadCount }}
+                      </span>
+                    </router-link>
+                  </a-menu-item>
+                  <a-menu-item>
                     <router-link to="/user/profile">
                       <SettingOutlined />
                       个人资料
@@ -57,9 +66,10 @@
   </div>
 </template>
 <script lang="ts" setup>
-import { computed, h, ref } from 'vue'
+import { computed, h, onMounted, ref, watch } from 'vue'
 import { RouterLink } from 'vue-router'
 import {
+  BellOutlined,
   CodeOutlined,
   HomeOutlined,
   LogoutOutlined,
@@ -68,6 +78,7 @@ import {
 } from '@ant-design/icons-vue'
 import { useRouter, useRoute } from 'vue-router'
 import { useLoginUserStore } from '@/stores/useLoginUserStore'
+import { useUnreadMessageStore } from '@/stores/useUnreadMessageStore'
 import { message } from 'ant-design-vue'
 import type { MenuProps } from 'ant-design-vue'
 import { userLogoutUsingPost } from '@/api/userController'
@@ -75,8 +86,31 @@ import { HEADER_MENU_CONFIG } from '@/access/headerMenuConfig'
 import { canAccess } from '@/access/checkAccess'
 
 const loginUserStore = useLoginUserStore()
+const unreadStore = useUnreadMessageStore()
 const router = useRouter()
 const route = useRoute()
+
+const onOpenMessages = () => {
+  unreadStore.refresh()
+}
+
+watch(
+  () => loginUserStore.loginUser?.id,
+  (id) => {
+    if (id) {
+      unreadStore.refresh()
+    } else {
+      unreadStore.clear()
+    }
+  },
+  { immediate: true }
+)
+
+onMounted(() => {
+  if (loginUserStore.loginUser?.id) {
+    unreadStore.refresh()
+  }
+})
 
 const goToLogin = () => {
   router.push('/user/login')
@@ -181,5 +215,15 @@ const doMenuClick = ({ key }: { key: string }) => {
 
 #globalHeader :deep(.ant-menu-item-selected) {
   color: #1890ff;
+}
+
+.unread-badge {
+  margin-left: 6px;
+  padding: 0 6px;
+  font-size: 12px;
+  line-height: 18px;
+  color: #fff;
+  background: #ff4d4f;
+  border-radius: 10px;
 }
 </style>

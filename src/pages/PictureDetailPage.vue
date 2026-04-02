@@ -59,6 +59,28 @@
                 />
               </a-space>
             </a-descriptions-item>
+            <template v-if="canSeeReview">
+              <a-descriptions-item label="人工审核">
+                {{
+                  picture.reviewStatus != null
+                    ? PIC_REVIEW_STATUS_MAP[picture.reviewStatus] ?? picture.reviewStatus
+                    : '-'
+                }}
+              </a-descriptions-item>
+              <a-descriptions-item v-if="picture.reviewMessage" label="审核说明">
+                {{ picture.reviewMessage }}
+              </a-descriptions-item>
+              <a-descriptions-item label="AI 初审">
+                {{
+                  picture.aiReviewStatus != null
+                    ? PIC_AI_REVIEW_STATUS_MAP[picture.aiReviewStatus] ?? picture.aiReviewStatus
+                    : '-'
+                }}
+              </a-descriptions-item>
+              <a-descriptions-item v-if="picture.aiReviewMessage" label="AI 说明">
+                {{ picture.aiReviewMessage }}
+              </a-descriptions-item>
+            </template>
           </a-descriptions>
           <!-- 图片操作 -->
           <a-space wrap>
@@ -99,6 +121,7 @@ import { useRoute, useRouter } from 'vue-router'
 import { downloadImage, formatSize, toHexColor } from '@/utils'
 import ShareModal from '@/components/ShareModal.vue'
 import { useLoginUserStore } from '@/stores/useLoginUserStore'
+import { PIC_AI_REVIEW_STATUS_MAP, PIC_REVIEW_STATUS_MAP } from '@/constants/picture'
 
 interface Props {
   id: string | number
@@ -122,6 +145,14 @@ const canEdit = computed(() => {
 })
 // 删除权限与编辑权限相同
 const canDelete = canEdit
+
+// 本人或管理员可见审核信息
+const canSeeReview = computed(() => {
+  const loginUser = loginUserStore.loginUser
+  if (!loginUser.id) return false
+  const ownerId = picture.value.userId ?? picture.value.user?.id
+  return loginUser.id === ownerId || loginUser.userRole === 'admin'
+})
 
 // 获取图片详情（团队空间需传 spaceId，分表才能正确查到）
 const fetchPictureDetail = async () => {

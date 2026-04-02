@@ -4,6 +4,7 @@ import HomePage from '@/pages/HomePage.vue'
 import UserLoginPage from '@/pages/user/UserLoginPage.vue'
 import UserRegisterPage from '@/pages/user/UserRegisterPage.vue'
 import UserProfilePage from '@/pages/user/UserProfilePage.vue'
+import UserMessagePage from '@/pages/user/UserMessagePage.vue'
 import UserManagePage from '@/pages/admin/UserManagePage.vue'
 import AddPicturePage from '@/pages/AddPicturePage.vue'
 import PictureManagePage from '@/pages/admin/PictureManagePage.vue'
@@ -43,6 +44,12 @@ const router = createRouter({
       path: '/user/profile',
       name: '个人资料',
       component: UserProfilePage,
+      meta: { access: AccessEnum.LOGIN },
+    },
+    {
+      path: '/user/messages',
+      name: '消息中心',
+      component: UserMessagePage,
       meta: { access: AccessEnum.LOGIN },
     },
     {

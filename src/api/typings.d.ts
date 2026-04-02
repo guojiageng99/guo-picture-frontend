@@ -35,6 +35,12 @@ declare namespace API {
     message?: string
   }
 
+  type BaseResponsePageUserMessage_ = {
+    code?: number
+    data?: PageUserMessage_
+    message?: string
+  }
+
   type BaseResponsePageSpace_ = {
     code?: number
     data?: PageSpace_
@@ -150,6 +156,8 @@ declare namespace API {
     userAvatar?: string
     userName?: string
     userProfile?: string
+    userPhone?: string
+    userEmail?: string
     userRole?: string
   }
 
@@ -175,6 +183,38 @@ declare namespace API {
     records?: UserVO[]
     size?: number
     total?: number
+  }
+
+  type UserMessage = {
+    id?: number
+    userId?: number
+    title?: string
+    content?: string
+    bizType?: string
+    bizId?: number
+    isRead?: number
+    createTime?: string
+    updateTime?: string
+  }
+
+  type PageUserMessage_ = {
+    current?: number
+    pages?: number
+    records?: UserMessage[]
+    size?: number
+    total?: number
+  }
+
+  type UserMessageQueryRequest = {
+    current?: number
+    pageSize?: number
+    sortField?: string
+    sortOrder?: string
+    unreadOnly?: boolean
+  }
+
+  type UserMessageReadRequest = {
+    id?: number
   }
 
   type PageSpace_ = {
@@ -211,6 +251,8 @@ declare namespace API {
     reviewStatus?: number
     reviewTime?: string
     reviewerId?: number
+    aiReviewStatus?: number
+    aiReviewMessage?: string
     spaceId?: number
     tags?: string
     thumbnailUrl?: string
@@ -272,6 +314,7 @@ declare namespace API {
 
   type PictureReviewRequest = {
     id?: number
+    spaceId?: number
     reviewStatus?: number
     reviewMessage?: string
     startEditTime?: string
@@ -352,6 +395,10 @@ declare namespace API {
     picScale?: number
     picSize?: number
     picWidth?: number
+    reviewStatus?: number
+    reviewMessage?: string
+    aiReviewStatus?: number
+    aiReviewMessage?: string
     spaceId?: number
     tags?: string[]
     thumbnailUrl?: string
@@ -381,6 +428,8 @@ declare namespace API {
     userName?: string
     userPassword?: string
     userProfile?: string
+    userPhone?: string
+    userEmail?: string
     userRole?: string
     vipCode?: string
     vipExpireTime?: string
@@ -392,6 +441,8 @@ declare namespace API {
     userAvatar?: string
     userName?: string
     userProfile?: string
+    userPhone?: string
+    userEmail?: string
     userRole?: string
   }
 
@@ -546,6 +597,8 @@ declare namespace API {
     checkPassword?: string
     userAccount?: string
     userPassword?: string
+    userPhone?: string
+    userEmail?: string
   }
 
   type UserUpdateRequest = {
@@ -553,6 +606,8 @@ declare namespace API {
     userAvatar?: string
     userName?: string
     userProfile?: string
+    userPhone?: string
+    userEmail?: string
     userRole?: string
   }
 
@@ -570,6 +625,8 @@ declare namespace API {
     userAvatar?: string
     userName?: string
     userProfile?: string
+    userPhone?: string
+    userEmail?: string
     userRole?: string
     vipCode?: string
     vipExpireTime?: string

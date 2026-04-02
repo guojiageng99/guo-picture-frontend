@@ -10,6 +10,12 @@
         <a-form-item label="账号">
           <a-input v-model:value="formState.userAccount" disabled />
         </a-form-item>
+        <a-form-item label="手机号">
+          <a-input v-model:value="formState.userPhone" disabled placeholder="注册时绑定" />
+        </a-form-item>
+        <a-form-item label="邮箱">
+          <a-input v-model:value="formState.userEmail" disabled placeholder="注册时绑定" />
+        </a-form-item>
         <a-form-item
           label="昵称"
           name="userName"
@@ -50,6 +56,8 @@ const submitting = ref(false)
 
 const formState = reactive({
   userAccount: '',
+  userPhone: '',
+  userEmail: '',
   userName: '',
   userAvatar: '',
   userProfile: '',
@@ -58,6 +66,8 @@ const formState = reactive({
 const syncFromStore = () => {
   const u = loginUserStore.loginUser
   formState.userAccount = u?.userAccount ?? ''
+  formState.userPhone = u?.userPhone ?? ''
+  formState.userEmail = u?.userEmail ?? ''
   formState.userName = u?.userName ?? ''
   formState.userAvatar = u?.userAvatar ?? ''
   formState.userProfile = u?.userProfile ?? ''

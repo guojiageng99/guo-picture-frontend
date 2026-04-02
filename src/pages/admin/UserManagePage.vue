@@ -57,6 +57,12 @@
         <a-form-item label="昵称" required>
           <a-input v-model:value="editForm.userName" placeholder="用户昵称" allow-clear />
         </a-form-item>
+        <a-form-item label="手机号">
+          <a-input v-model:value="editForm.userPhone" placeholder="11 位手机号" allow-clear maxlength="11" />
+        </a-form-item>
+        <a-form-item label="邮箱">
+          <a-input v-model:value="editForm.userEmail" placeholder="邮箱" allow-clear />
+        </a-form-item>
         <a-form-item label="头像 URL">
           <a-input v-model:value="editForm.userAvatar" placeholder="图片地址" allow-clear />
         </a-form-item>
@@ -84,6 +90,8 @@ const columns = [
   { title: 'id', dataIndex: 'id' },
   { title: '账号', dataIndex: 'userAccount' },
   { title: '用户名', dataIndex: 'userName' },
+  { title: '手机号', dataIndex: 'userPhone' },
+  { title: '邮箱', dataIndex: 'userEmail', ellipsis: true },
   { title: '头像', dataIndex: 'userAvatar' },
   { title: '简介', dataIndex: 'userProfile' },
   { title: '用户角色', dataIndex: 'userRole' },
@@ -162,6 +170,8 @@ const editForm = reactive({
   id: undefined as number | undefined,
   userAccount: '',
   userName: '',
+  userPhone: '',
+  userEmail: '',
   userAvatar: '',
   userProfile: '',
   userRole: 'user',
@@ -171,6 +181,8 @@ const openEdit = (record: API.UserVO) => {
   editForm.id = record.id
   editForm.userAccount = record.userAccount ?? ''
   editForm.userName = record.userName ?? ''
+  editForm.userPhone = record.userPhone ?? ''
+  editForm.userEmail = record.userEmail ?? ''
   editForm.userAvatar = record.userAvatar ?? ''
   editForm.userProfile = record.userProfile ?? ''
   editForm.userRole = record.userRole === 'admin' ? 'admin' : 'user'
@@ -191,6 +203,8 @@ const submitEdit = async () => {
     const res = await updateUserUsingPost({
       id: editForm.id,
       userName: editForm.userName,
+      userPhone: editForm.userPhone?.trim() || undefined,
+      userEmail: editForm.userEmail?.trim() || undefined,
       userAvatar: editForm.userAvatar,
       userProfile: editForm.userProfile,
       userRole: editForm.userRole,

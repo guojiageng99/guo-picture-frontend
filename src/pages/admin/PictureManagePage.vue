@@ -69,7 +69,19 @@
           <div>大小：{{ (record.picSize / 1024).toFixed(2) }}KB</div>
         </template>
         <template v-if="column.dataIndex === 'reviewMessage'">
-          <div>审核状态：{{ PIC_REVIEW_STATUS_MAP[record.reviewStatus] }}</div>
+          <div>
+            人工审核：{{
+              record.reviewStatus != null ? PIC_REVIEW_STATUS_MAP[record.reviewStatus] ?? '-' : '-'
+            }}
+          </div>
+          <div>
+            AI 初审：{{
+              record.aiReviewStatus != null
+                ? PIC_AI_REVIEW_STATUS_MAP[record.aiReviewStatus] ?? record.aiReviewStatus
+                : '-'
+            }}
+          </div>
+          <div v-if="record.aiReviewMessage">AI 说明：{{ record.aiReviewMessage }}</div>
           <div>审核信息：{{ record.reviewMessage }}</div>
           <div>审核人：{{ record.reviewerId }}</div>
           <div v-if="record.reviewTime">
@@ -121,6 +133,7 @@ import {
 } from '@/api/pictureController'
 import { message } from 'ant-design-vue'
 import {
+  PIC_AI_REVIEW_STATUS_MAP,
   PIC_REVIEW_STATUS_ENUM,
   PIC_REVIEW_STATUS_MAP,
   PIC_REVIEW_STATUS_OPTIONS,
@@ -262,6 +275,7 @@ const handleReview = async (record: API.Picture, reviewStatus: number) => {
     reviewStatus === PIC_REVIEW_STATUS_ENUM.PASS ? '管理员操作通过' : '管理员操作拒绝'
   const res = await doPictureReviewUsingPost({
     id: record.id,
+    spaceId: record.spaceId ?? 0,
     reviewStatus,
     reviewMessage,
   })
