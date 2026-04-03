@@ -7,7 +7,7 @@ const PROD_BASE_URL = ''
 // 创建 Axios 实例
 const myAxios = axios.create({
   baseURL: import.meta.env.DEV ? '' : PROD_BASE_URL,
-  timeout: 10000,
+  timeout: 60000,
   withCredentials: true,
 })
 
