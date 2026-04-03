@@ -232,7 +232,11 @@ export async function searchPictureByColorUsingPost(
 
 /** createPictureOutPaintingTask POST /api/picture/out_painting/create_task */
 export async function createPictureOutPaintingTaskUsingPost(
-  body: { pictureId?: number; parameters?: { xScale?: number; yScale?: number } },
+  body: {
+    pictureId?: number
+    spaceId?: number
+    parameters?: { xScale?: number; yScale?: number; bestQuality?: boolean }
+  },
   options?: { [key: string]: any }
 ) {
   return request<API.BaseResponse<any>>('/api/picture/out_painting/create_task', {
@@ -245,16 +249,28 @@ export async function createPictureOutPaintingTaskUsingPost(
   })
 }
 
-/** getPictureOutPaintingTask GET /api/picture/out_painting/get_task */
-export async function getPictureOutPaintingTaskUsingGet(
-  params: { taskId?: string },
+/** 查询扩图任务（业务 id） GET /api/picture/out_painting/task/{id} */
+export async function getPictureOutPaintingTaskByIdUsingGet(
+  id: number,
   options?: { [key: string]: any }
 ) {
-  return request<API.BaseResponse<any>>('/api/picture/out_painting/get_task', {
+  return request<API.BaseResponse<any>>(`/api/picture/out_painting/task/${id}`, {
     method: 'GET',
-    params: {
-      ...params,
+    ...(options || {}),
+  })
+}
+
+/** 扩图任务历史分页 POST /api/picture/out_painting/task/list/page */
+export async function listPictureOutPaintingTaskPageUsingPost(
+  body: { current?: number; pageSize?: number; userId?: number },
+  options?: { [key: string]: any }
+) {
+  return request<API.BaseResponse<any>>('/api/picture/out_painting/task/list/page', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
     },
+    data: body,
     ...(options || {}),
   })
 }
