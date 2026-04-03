@@ -77,6 +77,19 @@ export async function getPictureVoByIdUsingGet(
   })
 }
 
+/** reindexPictureToEs POST /api/picture/es/reindex（管理员，全量重建 ES 图片索引） */
+export async function reindexPictureEsUsingPost(options?: { [key: string]: any }) {
+  return request<API.BaseResponseLong_>('/api/picture/es/reindex', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    data: {},
+    timeout: 600000, // 全量索引可能较久，10 分钟
+    ...(options || {}),
+  })
+}
+
 /** listPictureByPage POST /api/picture/list/page */
 export async function listPictureByPageUsingPost(
   body: API.PictureQueryRequest,

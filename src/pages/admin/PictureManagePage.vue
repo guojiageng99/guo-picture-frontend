@@ -3,6 +3,12 @@
     <a-flex justify="space-between">
       <h2>图片管理</h2>
       <a-space>
+        <a-button
+          :loading="reindexEsLoading"
+          @click="handleReindexEs"
+        >
+          刷新 ES 索引
+        </a-button>
         <a-button type="primary" @click="router.push('/add_picture')">+ 创建图片</a-button>
         <a-button type="primary" @click="router.push('/add_picture/batch')" ghost>+ 批量创建图片</a-button>
       </a-space>
@@ -130,8 +136,9 @@ import {
   deletePictureUsingPost,
   doPictureReviewUsingPost,
   listPictureByPageUsingPost,
+  reindexPictureEsUsingPost,
 } from '@/api/pictureController'
-import { message } from 'ant-design-vue'
+import { message, Modal } from 'ant-design-vue'
 import {
   PIC_AI_REVIEW_STATUS_MAP,
   PIC_REVIEW_STATUS_ENUM,
@@ -202,6 +209,38 @@ const columns = [
 // 定义数据
 const dataList = ref<API.Picture[]>([])
 const total = ref(0)
+const reindexEsLoading = ref(false)
+
+/** 管理员：全量重建 Elasticsearch 图片索引（与后端 POST /picture/es/reindex 一致） */
+const handleReindexEs = () => {
+  Modal.confirm({
+    title: '刷新 ES 索引',
+    content:
+      '将从数据库全量同步图片到 Elasticsearch，数据量大时可能耗时数分钟。确定继续？',
+    okText: '开始刷新',
+    cancelText: '取消',
+    onOk: async () => {
+      reindexEsLoading.value = true
+      try {
+        const res = await reindexPictureEsUsingPost()
+        if (res.data.code === 0 && res.data.data != null) {
+          const n = res.data.data
+          message.success(
+            n > 0
+              ? `ES 索引刷新完成，共同步 ${n} 条`
+              : '请求已完成：共同步 0 条（请确认后端已启用 Elasticsearch）'
+          )
+        } else {
+          message.error(res.data.message ?? '刷新失败')
+        }
+      } catch (e: any) {
+        message.error(e?.message ?? '请求失败')
+      } finally {
+        reindexEsLoading.value = false
+      }
+    },
+  })
+}
 
 // 搜索条件
 const searchParams = reactive<API.PictureQueryRequest>({
